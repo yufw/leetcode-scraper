@@ -40,10 +40,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	skip, err := db.getProblemCount()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	count := 0
-	skip := int(last - last%100)
 	for {
-		total, questions, err := client.GetQuestionList(100, skip)
+		_, questions, err := client.GetQuestionList(100, int(skip))
 		log.Printf("got %d problems", len(questions))
 		if err != nil {
 			log.Fatal(err)
@@ -66,7 +70,7 @@ func main() {
 			count++
 			log.Printf("added problem [%d. %s]", question.LeetcodeID, question.Title)
 		}
-		if (*limit > 0 && count == *limit) || skip+len(questions) == total {
+		if (*limit > 0 && count == *limit) || len(questions) == 0 {
 			break
 		}
 		skip += 100

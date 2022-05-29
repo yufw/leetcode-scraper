@@ -35,6 +35,13 @@ func (db *Database) getLastProblemID() (int32, error) {
 	return id, nil
 }
 
+func (db *Database) getProblemCount() (int32, error) {
+	var count int32
+	err := db.QueryRow("SELECT COUNT(*) FROM problems").Scan(&count)
+
+	return count, err
+}
+
 func (db *Database) addTopic(t *Topic) error {
 	_, err := db.Exec("INSERT INTO topics (slug, name) VALUES ($1, $2) ON CONFLICT DO NOTHING", t.Slug, t.Name)
 
